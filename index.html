@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description"
+        content="RouteMaster Order Picker – Optimize warehouse picking routes by calculating the shortest path across a grid." />
+    <title>RouteMaster Order Picker</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="/static/styles.css" />
+    <!-- Three.js for 3D Warehouse View -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.min.js"></script>
+</head>
+
+<body>
+    <!-- ─── Header ────────────────────────────────────────────── -->
+    <header id="app-header">
+        <div class="header-inner">
+            <div class="logo">
+                <span class="logo-icon">📦</span>
+                <h1>RouteMaster <span class="accent">Order Picker</span></h1>
+            </div>
+            <p class="tagline">Optimize warehouse picking routes in seconds</p>
+        </div>
+    </header>
+
+    <main id="app-main">
+        <!-- ─── Left panel: Input ─────────────────────────────── -->
+        <section id="input-panel" class="panel glass">
+            <h2>Input Configuration</h2>
+
+            <label for="json-input">Paste JSON</label>
+            <textarea id="json-input" spellcheck="false" placeholder='{
+  "grid": [[0,0,1],[0,2,1],[0,0,0]],
+  "start": [0,0],
+  "targets": [[1,1],[2,2]]
+}'>{
+  "grid": [[0,0,1],[0,2,1],[0,0,0]],
+  "start": [0,0],
+  "targets": [[1,1],[2,2]]
+}</textarea>
+
+            <div class="input-group">
+                <label for="algorithm-select">Optimization Algorithm</label>
+                <select id="algorithm-select">
+                    <option value="bfs">BFS (Absolute Shortest)</option>
+                    <option value="astar">A* (Heuristic Search)</option>
+                </select>
+            </div>
+
+            <div class="btn-row">
+                <label class="upload-btn" for="file-upload" id="upload-label">
+                    <span>📂</span> Upload JSON
+                </label>
+                <input type="file" id="file-upload" accept=".json" hidden />
+
+                <button id="run-btn"><span class="btn-icon">▶</span> Run Algorithm</button>
+            </div>
+
+            <div class="btn-row secondary-row">
+                <button id="reset-btn" class="secondary-btn">↺ Reset</button>
+            </div>
+
+            <!-- ─── Output section ──────────────────────────── -->
+            <div id="output-section" class="hidden">
+                <h2>Result</h2>
+
+                <!-- Completion banner -->
+                <div id="completion-banner" class="hidden">
+                    <span class="banner-icon">✅</span>
+                    <span class="banner-text">Task Completed! All targets have been collected.</span>
+                </div>
+
+                <div id="step-counter" class="stat-card">
+                    <span class="stat-label">Total Steps</span>
+                    <span class="stat-value" id="total-steps-value">0</span>
+                </div>
+                <div id="target-counter" class="stat-card">
+                    <span class="stat-label">Targets Collected</span>
+                    <span class="stat-value" id="targets-collected-value">0</span>
+                </div>
+
+                <!-- Stats Dashboard -->
+                <div id="stats-dashboard">
+                    <h3>📊 Performance Metrics</h3>
+                    <div class="stats-grid">
+                        <div class="stat-mini-card">
+                            <span class="stat-mini-label">Optimization</span>
+                            <span class="stat-mini-value" id="efficiency-value">100%</span>
+                        </div>
+                        <div class="stat-mini-card">
+                            <span class="stat-mini-label">Nodes Explored</span>
+                            <span class="stat-mini-value" id="nodes-explored-value">0</span>
+                        </div>
+                        <div class="stat-mini-card">
+                            <span class="stat-mini-label">Naive Steps</span>
+                            <span class="stat-mini-value" id="naive-steps-value">0</span>
+                        </div>
+                        <div class="stat-mini-card">
+                            <span class="stat-mini-label">Steps Saved</span>
+                            <span class="stat-mini-value" id="time-saved-value">0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Directions panel -->
+                <div id="directions-panel">
+                    <h3>📍 Turn-by-Turn Directions</h3>
+                    <ol id="directions-list"></ol>
+                </div>
+
+                <label for="json-output">Output JSON</label>
+                <pre id="json-output"></pre>
+            </div>
+
+            <div id="error-box" class="hidden"></div>
+        </section>
+
+        <!-- ─── Right panel: Grid visualisation ───────────────── -->
+        <section id="grid-panel" class="panel glass">
+            <div class="panel-header">
+                <h2>Warehouse Grid</h2>
+                <div class="view-toggle">
+                    <span class="toggle-label">3D View</span>
+                    <label class="switch">
+                        <input type="checkbox" id="view-3d-toggle">
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+            </div>
+            <div id="grid-container">
+                <p class="placeholder-text">Paste JSON and click <strong>Run Algorithm</strong> to visualize the grid.
+                </p>
+            </div>
+            <!-- 3D View Container -->
+            <div id="three-container" class="hidden"></div>
+        </section>
+    </main>
+
+    <footer id="app-footer">
+        <p>RouteMaster Order Picker &middot; Shortest-path warehouse optimization</p>
+    </footer>
+
+    <script src="/static/script.js"></script>
+</body>
+
+</html>
